@@ -3,6 +3,7 @@
 public class Figure : Mesh
 {
     public Figure(Vector3 position) : base(CreateVertices(position), indices) { }
+    public Vector3 Position { get; private set; } // Agregar esta propiedad
 
     private static float[] CreateVertices(Vector3 position)
     {
@@ -78,4 +79,7 @@ public class Figure : Mesh
         16, 19, 23, 23, 20, 16,
         17, 18, 22, 22, 21, 17
     };
+
+
+
 }

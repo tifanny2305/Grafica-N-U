@@ -1,11 +1,15 @@
 ﻿using OpenTK.Graphics.OpenGL4;
+using System;
 
-public class Mesh
+public class Mesh : IDisposable
 {
     private int VBO, VAO, EBO;
+    private int indexCount;
 
     public Mesh(float[] vertices, uint[] indices)
     {
+        indexCount = indices.Length;
+
         VAO = GL.GenVertexArray();
         GL.BindVertexArray(VAO);
 
@@ -22,11 +26,28 @@ public class Mesh
 
         GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, 6 * sizeof(float), 3 * sizeof(float));
         GL.EnableVertexAttribArray(1);
+
+        GL.BindVertexArray(0);
     }
 
     public void Draw()
     {
         GL.BindVertexArray(VAO);
-        GL.DrawElements(PrimitiveType.Triangles, 36, DrawElementsType.UnsignedInt, 0);
+        GL.DrawElements(PrimitiveType.Triangles, indexCount, DrawElementsType.UnsignedInt, 0);
+        GL.BindVertexArray(0);
+    }
+
+    public void Dispose()
+    {
+        GL.DeleteBuffer(VBO);
+        GL.DeleteBuffer(EBO);
+        GL.DeleteVertexArray(VAO);
+        GC.SuppressFinalize(this); // Añadir esto
+    }
+
+    // Añadir destructor por seguridad
+    ~Mesh()
+    {
+        Dispose();
     }
 }
